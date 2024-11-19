@@ -9,3 +9,4 @@ Pillow==9.5.0  # Specify a compatible version
 inference-sdk
 setuptools>=65.0.0
 wheel>=0.38.0
+cython
