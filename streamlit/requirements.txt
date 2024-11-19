@@ -6,3 +6,7 @@ streamlit
 requests
 Pillow
 inference-sdk
+streamlit==1.25.0
+setuptools>=65.0.0
+wheel>=0.38.0
+distutils
