@@ -2,4 +2,5 @@ streamlit==1.26.0
 fastapi==0.100.0
 starlette==0.31.0
 uvicorn[standard]==0.23.0
-inference-sdk==1.0.0
+inference-sdk>=0.9.0
+
