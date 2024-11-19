@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-# Initialize the Roboflow API client (No FastAPI required)
+# Initialize the Roboflow API client
 API_URL = "https://detect.roboflow.com"
 API_KEY = "mCrAdZBBO2EnuzdFNUgb"  # Your API key
 MODEL_ID = "leaf_disease_detection-yh7jo/1"  # Specify your model ID
@@ -15,7 +15,7 @@ def streamlit_app():
     
     if uploaded_file is not None:
         # Display the uploaded image
-        st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+        st.image(uploaded_file, caption="Uploaded Image", use_container_width=True)
 
         # Sending the file to the Roboflow API directly
         with st.spinner("Processing..."):
