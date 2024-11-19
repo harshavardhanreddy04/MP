@@ -1,6 +1,5 @@
 import streamlit as st
 import requests
-import json
 from PIL import Image, ImageDraw
 
 # Roboflow API URL and API key
@@ -22,13 +21,14 @@ def streamlit_app():
         # Sending the file to the Roboflow API for object detection
         with st.spinner("Processing..."):
             try:
+                # Ensure the endpoint and method are correct for the object detection API
                 response = requests.post(
-                    f"{API_URL}/{MODEL_ID}/infer",  # Roboflow inference URL
+                    f"{API_URL}/{MODEL_ID}/infer",  # Roboflow inference URL (Ensure this is correct)
                     files={"file": uploaded_file.getvalue()},
                     headers={"Authorization": f"Bearer {API_KEY}"}
                 )
 
-                # Check the status code of the response
+                # Check if the response status is OK (200)
                 if response.status_code == 200:
                     result = response.json()
 
