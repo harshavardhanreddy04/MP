@@ -1,19 +1,20 @@
 import streamlit as st
 from fastapi import FastAPI, File, UploadFile
-from starlette.responses import JSONResponse
+from fastapi.responses import JSONResponse
 from inference_sdk import InferenceHTTPClient
-import uvicorn
 from threading import Thread
+import uvicorn
 
-# Initialize the Inference Client
+# Initialize the Roboflow Client
 CLIENT = InferenceHTTPClient(
     api_url="https://detect.roboflow.com",
     api_key="mCrAdZBBO2EnuzdFNUgb"
 )
 
-# FastAPI App
+# FastAPI instance
 api = FastAPI()
 
+# Define the FastAPI endpoint
 @api.post("/infer")
 async def infer(file: UploadFile = File(...)):
     try:
@@ -24,19 +25,41 @@ async def infer(file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
-# Streamlit App
-def start_streamlit():
+# Streamlit UI to interact with the API
+def streamlit_app():
     st.title("Leaf Disease Detection")
-    st.write("Upload an image via the Flutter app to get results here.")
+    st.write("Upload an image to test your model.")
 
-# Run FastAPI and Streamlit together
+    uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+    if uploaded_file is not None:
+        st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+
+        # Sending the file to the FastAPI backend
+        with st.spinner("Processing..."):
+            import requests
+            response = requests.post(
+                "http://127.0.0.1:8000/infer",  # FastAPI endpoint
+                files={"file": uploaded_file}
+            )
+            if response.status_code == 200:
+                result = response.json()
+                st.success("Inference Complete!")
+                st.json(result)
+            else:
+                st.error(f"Error: {response.json().get('error', 'Unknown error')}")
+
+# Running FastAPI and Streamlit concurrently
 def run_apps():
-    # Start Streamlit in a separate thread
-    thread = Thread(target=lambda: st._run_app(start_streamlit, "streamlit run"))
+    # Start FastAPI in a separate thread
+    def fastapi_thread():
+        uvicorn.run(api, host="0.0.0.0", port=8000)
+
+    thread = Thread(target=fastapi_thread)
+    thread.daemon = True
     thread.start()
-    
-    # Run FastAPI app
-    uvicorn.run(api, host="0.0.0.0", port=8000)
+
+    # Run Streamlit app
+    streamlit_app()
 
 if __name__ == "__main__":
     run_apps()
