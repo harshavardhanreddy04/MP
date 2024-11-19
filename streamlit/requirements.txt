@@ -2,11 +2,10 @@ numpy==1.24.3
 pandas
 scikit-learn
 matplotlib
-streamlit
+streamlit==1.25.0
 requests
 Pillow
 inference-sdk
-streamlit==1.25.0
 setuptools>=65.0.0
 wheel>=0.38.0
 distutils
